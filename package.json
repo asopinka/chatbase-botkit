@@ -1,0 +1,29 @@
+{
+  "name": "chatbase-botkit",
+  "version": "1.0.0",
+  "description": "Chatbase middleware for Botkit",
+  "main": "chatbase.js",
+  "keywords": [
+    "bot",
+    "bots",
+    "chatbot",
+    "slack",
+    "analytics",
+    "data",
+    "tools"
+  ],
+  "scripts": {},
+  "maintainers": [
+    {
+      "name": "asopinka",
+      "email": "alex@tasytt.com"
+    }
+  ],
+  "author": {
+    "name": "Alex Sopinka"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.83.0"
+  }
+}
