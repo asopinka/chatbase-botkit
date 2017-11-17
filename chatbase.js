@@ -2,22 +2,25 @@
 
 var request = require('request');
 
-ChatbaseSlack = (apiKey) => {
-	var that = this;
-	that.apiKey = apiKey;
+class ChatbaseSlack {
 
-	logMessage = (bot, message, type) => {
+	constructor(apiKey) {
+		this.apiKey = apiKey;
+	}
+
+	logMessage(bot, message, type) {
 
 		// map bot as user if not specified
 		if (!message.user) {
 			message.user = bot.identity.id;
 		}
+		console.log('ApiKey: ' + this.apiKey);
 
 		request({
 			url: 'https://chatbase.com/api/message',
 			method: 'POST',
 			json: {
-				api_key: that.apiKey,
+				api_key: this.apiKey,
 				type: type,
 				user_id: message.user,
 				time_stamp: new Date().getTime() / 1000,
@@ -25,19 +28,19 @@ ChatbaseSlack = (apiKey) => {
 				message: message
 			}
 		}, (err, httpRsp, body) => {
-
+			console.log(body);
 		});
 	}
 
 	// botkit middleware endpoints
-	that.send = (bot, message, next) => {
-		logMessage(bot, message, 'bot');
+	send(bot, message, next) {
+		this.logMessage(bot, message, 'bot');
 		next();
 	};
 
 	// botkit middleware endpoints
-	that.receive = (bot, message, next) => {
-		logMessage(bot, message, 'user');
+	receive(bot, message, next) {
+		this.logMessage(bot, message, 'user');
 		next();
 	};
 }
