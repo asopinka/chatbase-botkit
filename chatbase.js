@@ -2,7 +2,7 @@
 
 var request = require('request');
 
-ChatbaseSlack(apiKey) => {
+ChatbaseSlack = (apiKey) => {
 	var that = this;
 	that.apiKey = apiKey;
 
