@@ -5,44 +5,48 @@ var request = require('request');
 class ChatbaseSlack {
 
 	constructor(apiKey) {
-		this.apiKey = apiKey;
-	}
+		let that = this;
 
-	logMessage(bot, message, type) {
+		that.apiKey = apiKey;
 
-		// map bot as user if not specified
-		if (!message.user) {
-			message.user = bot.identity.id;
-		}
-		console.log('ApiKey: ' + this.apiKey);
+		that.logMessage = (bot, message, type) => {
 
-		request({
-			url: 'https://chatbase.com/api/message',
-			method: 'POST',
-			json: {
-				api_key: this.apiKey,
-				type: type,
-				user_id: message.user,
-				time_stamp: new Date().getTime() / 1000,
-				platform: 'Slack',
-				message: message
+			// map bot as user if not specified
+			if (!message.user) {
+				message.user = bot.identity.id;
 			}
-		}, (err, httpRsp, body) => {
-			console.log(body);
-		});
+
+			request({
+				url: 'https://chatbase.com/api/message',
+				method: 'POST',
+				json: {
+					api_key: that.apiKey,
+					type: type,
+					user_id: message.user,
+					time_stamp: new Date().getTime() / 1000,
+					platform: 'Slack',
+					message: JSON.stringify(message)
+				}
+			}, (err, httpRsp, body) => {
+			});
+		}
+
+		// botkit middleware endpoints
+		that.send = (bot, message, next) => {
+			if (message && message.type == 'message') {
+				that.logMessage(bot, message, 'agent');
+			}
+			next();
+		};
+
+		// botkit middleware endpoints
+		that.receive = (bot, message, next) => {
+			if (message && message.type == 'message') {
+				that.logMessage(bot, message, 'user');
+			}
+			next();
+		};
 	}
-
-	// botkit middleware endpoints
-	send(bot, message, next) {
-		this.logMessage(bot, message, 'bot');
-		next();
-	};
-
-	// botkit middleware endpoints
-	receive(bot, message, next) {
-		this.logMessage(bot, message, 'user');
-		next();
-	};
 }
 
 module.exports = (apiKey) => {
